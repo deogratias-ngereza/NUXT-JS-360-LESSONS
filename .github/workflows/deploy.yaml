@@ -37,6 +37,9 @@ jobs:
       - name: Confirm PWD
         run: echo Current directory $(pwd)
 
+      - name: CHECK AGAIN
+        run: ls ~/PROJECTS/NUXT-LESSON-01
+
       - name: Copy files to server
         run: git checkout ${{ secrets.MAIN_BRANCH }} && git pull && exit
 
