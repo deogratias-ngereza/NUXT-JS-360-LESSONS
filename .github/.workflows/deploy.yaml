@@ -17,5 +17,5 @@ jobs:
         run: |
           echo "This is a test step"
           pwd
-          echo "Hello, World!"
+          echo "Hello, World! "
 
