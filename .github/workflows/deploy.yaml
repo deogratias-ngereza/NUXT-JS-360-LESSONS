@@ -19,25 +19,48 @@ jobs:
           pwd
           echo "Hello, World! "
 
-      - name: install ssh keys
+
+      - name: Install SSH keys
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to Server
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          # Change to WORK_DIR and pull the latest code
+          cd "${{ secrets.WORK_DIR }}" || { echo "Failed to access WORK_DIR"; exit 1; }
+          echo "Current directory: $(pwd)"
+          
+          # Pull the latest from the repository
+          git checkout ${{ secrets.MAIN_BRANCH }} || { echo "Failed to checkout branch"; exit 1; }
+          git pull || { echo "Failed to pull latest code"; exit 1; }
+          EOF
+
+      #- name: install ssh keys
         # check this thread to understand why its needed:
         # https://stackoverflow.com/a/70447517
         # https://www.programonaut.com/how-to-deploy-a-git-repository-to-a-server-using-github-actions/
-        run: |
-          install -m 600 -D /dev/null ~/.ssh/id_rsa
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+       # run: |
+       #   install -m 600 -D /dev/null ~/.ssh/id_rsa
+       #   echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+       #   ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
 
-      - name: connect and cd to WORK_DIR
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && ls -la"
+      
+
+      #- name: connect and cd to WORK_DIR
+      #  run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && ls -la"
 
     
-      - name: Confirm PWD
-        run: echo Current directory $(pwd)
+      #- name: Confirm PWD
+      #  run: echo Current directory $(pwd)
 
 
-      - name: Copy files to server
-        run: git checkout ${{ secrets.MAIN_BRANCH }} && git pull && exit
+      #- name: Copy files to server
+      #  run: git checkout ${{ secrets.MAIN_BRANCH }} && git pull && exit
 
       - name: cleanup
         run: rm -rf ~/.ssh
