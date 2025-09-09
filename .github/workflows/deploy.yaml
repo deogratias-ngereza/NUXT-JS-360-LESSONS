@@ -29,7 +29,10 @@ jobs:
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
 
       - name: connect and cd to WORK_DIR
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }}"
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+
+      - name: Change to WORK_DIR
+        run: cd ${{ secrets.WORK_DIR }}
 
       - name: Check pwd
         run: echo Current directory $(pwd)
