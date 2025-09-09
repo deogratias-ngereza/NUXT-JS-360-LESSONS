@@ -27,7 +27,15 @@ jobs:
           install -m 600 -D /dev/null ~/.ssh/id_rsa
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
-      - name: connect and pull
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && exit"
+
+      - name: connect and cd to WORK_DIR
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }}"
+
+      - name: Check pwd
+        run: echo "Current directory: $(pwd)"
+
+      - name: Copy files to server
+        run: git checkout ${{ secrets.MAIN_BRANCH }} && git pull && exit
+
       - name: cleanup
         run: rm -rf ~/.ssh
