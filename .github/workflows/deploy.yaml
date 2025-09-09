@@ -34,7 +34,7 @@ jobs:
       - name: Change to WORK_DIR
         run: cd ${{ secrets.WORK_DIR }}
 
-      - name: Check pwd
+      - name: Confirm PWD
         run: echo Current directory $(pwd)
 
       - name: Copy files to server
