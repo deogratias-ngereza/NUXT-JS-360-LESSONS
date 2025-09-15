@@ -4,18 +4,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { defineProps } from 'vue';
-
-const props = defineProps({
-  type: {
-    type: String,
-    default: 'info'
-  }
-});
-</script>
-
-
+<script setup lang="ts"></script>
 
 <style scoped>
 .alert {
